@@ -3,6 +3,7 @@ package main
 import (
 	appconf "rlesjak.com/ha-scheduler/config"
 	Models "rlesjak.com/ha-scheduler/model"
+	"rlesjak.com/ha-scheduler/server"
 )
 
 func main() {
@@ -11,4 +12,6 @@ func main() {
 
 	// Connect to the database
 	Models.ConnectDatabase(config)
+
+	server.StartServer(config)
 }

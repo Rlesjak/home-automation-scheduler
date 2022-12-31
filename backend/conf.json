@@ -1,3 +1,7 @@
 {
-    "name": "Home automations scheduler app"
+    "Name": "Home automations scheduler app",
+    "Api": {
+        "BasePath": "/api",
+        "v1": "/v1"
+    }
 }
