@@ -10,28 +10,28 @@ import (
 	models "rlesjak.com/ha-scheduler/model"
 )
 
-func RegisterElementGroupsController(router *gin.RouterGroup) {
-	elGroupsRouter := router.Group("/elGroup")
+func RegisterTriggerGroupsController(router *gin.RouterGroup) {
+	trigGroupsRouter := router.Group("/trigGroup")
 
-	deleteElementGroups(elGroupsRouter)
+	deleteTriggerGroups(trigGroupsRouter)
 
 	{
-		// /api/v1/elGroup/master**
-		mastersRouter := elGroupsRouter.Group("/master")
-		getMasterElementGroups(mastersRouter)
-		postMasterElementGroups(mastersRouter)
+		// /api/v1/trigGroup/master**
+		mastersRouter := trigGroupsRouter.Group("/master")
+		getMasterTriggerGroups(mastersRouter)
+		postMasterTriggerGroups(mastersRouter)
 	}
 
 	{
-		// /api/v1/elGroup/child**
-		childRouter := elGroupsRouter.Group("/child")
-		getChildElementGroups(childRouter)
-		postChildElementGroups(childRouter)
+		// /api/v1/trigGroup/child**
+		childRouter := trigGroupsRouter.Group("/child")
+		getChildTriggerGroups(childRouter)
+		postChildTriggerGroups(childRouter)
 	}
 }
 
-// DELETE /api/v1/elGroup
-func deleteElementGroups(router *gin.RouterGroup) {
+// DELETE /api/v1/trigGroup
+func deleteTriggerGroups(router *gin.RouterGroup) {
 	router.DELETE("/:uuid", func(ctx *gin.Context) {
 
 		uid, err := uuid.Parse(ctx.Param("uuid"))
@@ -40,7 +40,7 @@ func deleteElementGroups(router *gin.RouterGroup) {
 			return
 		}
 
-		if err := models.Q.DeleteElementsGroup(ctx, uid); err != nil {
+		if err := models.Q.DeleteTriggersGroup(ctx, uid); err != nil {
 			abortWithGenericError(ctx, err)
 			return
 		}
@@ -49,11 +49,11 @@ func deleteElementGroups(router *gin.RouterGroup) {
 	})
 }
 
-// GET /api/v1/elGroup/master
-func getMasterElementGroups(router *gin.RouterGroup) {
+// GET /api/v1/trigGroup/master
+func getMasterTriggerGroups(router *gin.RouterGroup) {
 	router.GET("", func(ctx *gin.Context) {
 
-		masterGroups, err := models.Q.GetMasterElementGroups(ctx)
+		masterGroups, err := models.Q.GetMasterTriggerGroups(ctx)
 		if err != nil {
 			abortWithGenericError(ctx, err)
 			return
@@ -63,18 +63,18 @@ func getMasterElementGroups(router *gin.RouterGroup) {
 	})
 }
 
-// POST /api/v1/elGroup/master
-func postMasterElementGroups(router *gin.RouterGroup) {
+// POST /api/v1/trigGroup/master
+func postMasterTriggerGroups(router *gin.RouterGroup) {
 	router.POST("", func(ctx *gin.Context) {
 
-		var reqBody db.CreateMasterElementsGroupParams
+		var reqBody db.CreateMasterTriggersGroupParams
 
 		if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 			abortWithBadRequest(ctx, err)
 			return
 		}
 
-		uuid, err := models.Q.CreateMasterElementsGroup(ctx, reqBody)
+		uuid, err := models.Q.CreateMasterTriggersGroup(ctx, reqBody)
 
 		if err != nil {
 			abortWithGenericError(ctx, err)
@@ -85,8 +85,8 @@ func postMasterElementGroups(router *gin.RouterGroup) {
 	})
 }
 
-// GET /api/v1/elGroup/child/:uuid
-func getChildElementGroups(router *gin.RouterGroup) {
+// GET /api/v1/trigGroup/child/:uuid
+func getChildTriggerGroups(router *gin.RouterGroup) {
 	router.GET("", func(ctx *gin.Context) {
 		abortWithMessage(ctx, http.StatusBadRequest,
 			"Missing uuid of master group. Use: .../child/:uuid",
@@ -101,7 +101,7 @@ func getChildElementGroups(router *gin.RouterGroup) {
 			return
 		}
 
-		childGroups, err := models.Q.GetChildElementGroupsOf(ctx, uid)
+		childGroups, err := models.Q.GetChildTriggerGroupsOf(ctx, uid)
 		if err != nil {
 			abortWithGenericError(ctx, err)
 			return
@@ -111,11 +111,11 @@ func getChildElementGroups(router *gin.RouterGroup) {
 	})
 }
 
-// POST /api/v1/elGroup/child
-func postChildElementGroups(router *gin.RouterGroup) {
+// POST /api/v1/trigGroup/child
+func postChildTriggerGroups(router *gin.RouterGroup) {
 	router.POST("", func(ctx *gin.Context) {
 
-		reqBody := db.CreateChildElementsGroupParams{}
+		reqBody := db.CreateChildTriggersGroupParams{}
 
 		binding.EnableDecoderDisallowUnknownFields = true
 		if err := ctx.ShouldBindJSON(&reqBody); err != nil {
@@ -128,7 +128,7 @@ func postChildElementGroups(router *gin.RouterGroup) {
 			return
 		}
 
-		uuid, err := models.Q.CreateChildElementsGroup(ctx, reqBody)
+		uuid, err := models.Q.CreateChildTriggersGroup(ctx, reqBody)
 		if err != nil {
 			abortWithGenericError(ctx, err)
 			return

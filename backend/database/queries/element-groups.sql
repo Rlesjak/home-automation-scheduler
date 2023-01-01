@@ -10,15 +10,17 @@ public.element_groups grp,
 (SELECT id FROM public.element_groups WHERE uuid = @parentUuid::uuid) ids
 WHERE grp.parent_group_id = ids.id;
 
--- name: CreateChildElementsGroup :exec
+-- name: CreateChildElementsGroup :one
 INSERT INTO public.element_groups (parent_group_id, "name", description)
 SELECT id, @name::text, @description::text
 FROM public.element_groups 
-WHERE uuid = @parentUuid::uuid;
+WHERE uuid = @parentUuid::uuid
+RETURNING uuid;
 
--- name: CreateMasterElementsGroup :exec
+-- name: CreateMasterElementsGroup :one
 INSERT INTO public.element_groups (parent_group_id, "name", description)
-VALUES (NULL, @name::text, @description::text);
+VALUES (NULL, @name::text, @description::text)
+RETURNING uuid;
 
 -- name: DeleteElementsGroup :exec
 DELETE FROM public.element_groups

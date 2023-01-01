@@ -13,5 +13,6 @@ func main() {
 	// Connect to the database
 	Models.ConnectDatabase(config)
 
+	// Start listening for http requests
 	server.StartServer(config)
 }

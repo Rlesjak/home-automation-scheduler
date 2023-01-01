@@ -23,3 +23,7 @@ func abortWithGenericError(ctx *gin.Context, err error) {
 func abortWithBadRequest(ctx *gin.Context, err error) {
 	ctx.AbortWithStatusJSON(http.StatusBadRequest, formatError(err.Error()))
 }
+
+func abortWithMessage(ctx *gin.Context, status int, msg string) {
+	ctx.AbortWithStatusJSON(status, formatError(msg))
+}

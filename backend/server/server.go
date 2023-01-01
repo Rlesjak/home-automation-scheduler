@@ -6,12 +6,14 @@ import (
 	controller "rlesjak.com/ha-scheduler/server/controllers"
 )
 
-func StartServer(config config.Config) {
+func StartServer(config config.Config) *gin.Engine {
 	router := gin.Default()
 
 	registerApiRoutes(router, config)
 
 	router.Run("0.0.0.0:9090")
+
+	return router
 }
 
 func registerApiRoutes(router *gin.Engine, config config.Config) {
@@ -23,4 +25,5 @@ func registerApiRoutes(router *gin.Engine, config config.Config) {
 
 	v1 := router.Group(v1Path)
 	controller.RegisterElementGroupsController(v1)
+	controller.RegisterTriggerGroupsController(v1)
 }
