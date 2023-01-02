@@ -26,4 +26,5 @@ func registerApiRoutes(router *gin.Engine, config config.Config) {
 	v1 := router.Group(v1Path)
 	controller.RegisterElementGroupsController(v1)
 	controller.RegisterTriggerGroupsController(v1)
+	controller.RegisterTriggersController(v1)
 }

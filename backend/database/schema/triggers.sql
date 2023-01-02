@@ -9,6 +9,7 @@ CREATE TABLE public.triggers
     command text,
     element_id bigint,
     group_id bigint NOT NULL,
+    active boolean NOT NULL DEFAULT false,
     PRIMARY KEY (id),
     FOREIGN KEY (group_id)
         REFERENCES public.trigger_groups (id) MATCH SIMPLE
