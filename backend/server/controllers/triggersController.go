@@ -34,16 +34,18 @@ func postStandaloneTrigger(router *gin.RouterGroup) {
 			return
 		}
 
-		if err := services.CreateScheduledJob(
+		nextRun, schedulerErr := services.CreateScheduledJob(
 			reqBody.Condition,
 			reqBody.Command,
 			uid,
-		); err != nil {
+		)
+
+		if schedulerErr != nil {
 			abortWithGenericError(ctx, err)
 			return
 		}
 
-		ctx.JSON(http.StatusCreated, gin.H{"uuid": uid})
+		ctx.JSON(http.StatusCreated, gin.H{"uuid": uid, "nextRun": nextRun})
 	})
 }
 

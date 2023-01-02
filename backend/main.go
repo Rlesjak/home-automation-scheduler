@@ -2,6 +2,7 @@ package main
 
 import (
 	appconf "rlesjak.com/ha-scheduler/config"
+	"rlesjak.com/ha-scheduler/logs"
 	models "rlesjak.com/ha-scheduler/model"
 	"rlesjak.com/ha-scheduler/scheduler"
 	"rlesjak.com/ha-scheduler/server"
@@ -9,6 +10,10 @@ import (
 
 func main() {
 
+	// Initialise logger singletons
+	logs.InitLoggers()
+
+	// Create config
 	config := appconf.GetAppConfig()
 
 	// Connect to the database

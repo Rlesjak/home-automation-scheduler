@@ -2,7 +2,6 @@ package scheduler
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/go-co-op/gocron"
@@ -19,11 +18,6 @@ func InitScheduler(config config.Config) {
 	Scheduler.StartAsync()
 }
 
-func handler(tag string, command string, job gocron.Job) {
-	fmt.Println("-------")
-	fmt.Println("SCHEDULRE: " + tag + "\n" + job.Tags()[0])
-}
-
 // Get scheduler with already configured interval
 // and register a job with the provided uuid
 func CreateJob(scheduler *gocron.Scheduler, jobuuid uuid.UUID, jobcommand string) (*gocron.Job, error) {
@@ -36,9 +30,10 @@ func CreateJob(scheduler *gocron.Scheduler, jobuuid uuid.UUID, jobcommand string
 		return nil, errors.New("Job '" + uuidString + "' already registered!")
 	}
 
+	// Start job with schedule
 	job, err := scheduler.
 		Tag(uuidString).
-		StartImmediately().
+		WaitForSchedule().
 		DoWithJobDetails(handler, uuidString, jobcommand)
 	return job, err
 }
