@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/TwiN/go-color v1.4.0 // indirect
+	github.com/eclipse/paho.mqtt.golang v1.4.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.8.2 // indirect
 	github.com/go-co-op/gocron v1.18.0 // indirect
@@ -15,6 +16,7 @@ require (
 	github.com/gookit/color v1.5.2 // indirect
 	github.com/gookit/config/v2 v2.1.8 // indirect
 	github.com/gookit/goutil v0.6.1 // indirect
+	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

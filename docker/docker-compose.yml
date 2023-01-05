@@ -10,3 +10,13 @@ services:
       - '5432:5432'
     volumes: 
       - ./docker-data/db:/var/lib/postgresql/data
+  
+  mosquitto:
+    image: eclipse-mosquitto:2
+    volumes:
+      - ./docker-data/mqtt/config/:/mosquitto/config/:ro
+      - ./docker-data/mqtt/log/:/mosquitto/log/
+      - ./docker-data/mqtt/data:/mosquitto/data/
+    ports:
+      - 1883:1883
+      - 9001:9001

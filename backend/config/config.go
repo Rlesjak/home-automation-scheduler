@@ -33,6 +33,9 @@ func GetAppConfig() config.Config {
 		"DB_PASSWORD": "env_db_pwd",
 		"DB_NAME":     "env_db_name",
 		"DB_PORT":     "env_db_port",
+		"MQ_HOST":     "env_mqtt_host",
+		"MQ_USER":     "env_mqtt_user",
+		"MQ_PWD":      "env_mqtt_pwd",
 	})
 
 	// Load configuration

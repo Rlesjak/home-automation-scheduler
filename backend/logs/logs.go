@@ -32,3 +32,13 @@ func InitLoggers() {
 	Error = log.New(errorFile, "[ERROR]", log.Ldate|log.Ltime|log.Lshortfile)
 	Info.Println("Initialised ERROR logger")
 }
+
+func CreateCustomLoggerFile(filename string) *os.File {
+	// Create Info logger
+	file, err := os.OpenFile("log/"+filename+".log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return file
+}
