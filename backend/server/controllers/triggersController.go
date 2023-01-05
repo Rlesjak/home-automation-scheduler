@@ -35,8 +35,8 @@ func postStandaloneTrigger(router *gin.RouterGroup) {
 		}
 
 		nextRun, schedulerErr := services.CreateScheduledJob(
-			reqBody.Condition,
-			reqBody.Command,
+			reqBody.Condition.String,
+			reqBody.Command.String,
 			uid,
 		)
 

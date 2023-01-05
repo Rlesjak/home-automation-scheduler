@@ -9,5 +9,11 @@ sql:
       out: "database/generated"
       emit_json_tags: true
       overrides:
+      - db_type: "text"
+        nullable: true
+        go_type:
+              import: "rlesjak.com/ha-scheduler/data-types"
+              package: "types"
+              type: "NullString"
       - column: "element_groups.name"
         go_struct_tag: 'binding:"required"'
