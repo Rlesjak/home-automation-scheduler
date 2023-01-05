@@ -12,6 +12,7 @@ import (
 )
 
 var Q *db.Queries
+var DB *sql.DB
 
 func ConnectDatabase(config config.Config) {
 
@@ -54,4 +55,5 @@ func ConnectDatabase(config config.Config) {
 	}
 
 	Q = db.New(database)
+	DB = database
 }

@@ -28,23 +28,39 @@ func postStandaloneTrigger(router *gin.RouterGroup) {
 			return
 		}
 
-		uid, err := models.Q.CreateStandaloneTrigger(ctx, reqBody)
+		// Start database transaction
+		tx, txErr := models.DB.Begin()
+		if txErr != nil {
+			abortWithGenericError(ctx, txErr)
+		}
+
+		// Get models inside transaction
+		duringTransaction := models.Q.WithTx(tx)
+
+		// Create trigger record, and get uuid of trigger
+		uid, err := duringTransaction.CreateStandaloneTrigger(ctx, reqBody)
 		if err != nil {
 			abortWithGenericError(ctx, err)
 			return
 		}
 
+		// Create scheduled job
 		nextRun, schedulerErr := services.CreateScheduledJob(
 			reqBody.Condition.String,
 			reqBody.Command.String,
 			uid,
 		)
 
+		// If there was an error scheduling a trigger
+		// rollback the transaction
 		if schedulerErr != nil {
-			abortWithGenericError(ctx, err)
+			tx.Rollback()
+			abortWithGenericError(ctx, schedulerErr)
 			return
 		}
 
+		// Commit transaction
+		tx.Commit()
 		ctx.JSON(http.StatusCreated, gin.H{"uuid": uid, "nextRun": nextRun})
 	})
 }
