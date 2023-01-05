@@ -11,16 +11,21 @@ import (
 
 //TODO: Create RegisterJobErrorLogger function
 
-var Scheduler *gocron.Scheduler
+var scheduler *gocron.Scheduler
 
 func InitScheduler(config config.Config) {
-	Scheduler = gocron.NewScheduler(time.Local)
-	Scheduler.StartAsync()
+	scheduler = gocron.NewScheduler(time.Local)
+	scheduler.StartAsync()
+}
+
+// Get scheduler instance
+func GetScheduler() *gocron.Scheduler {
+	return scheduler
 }
 
 // Get scheduler with already configured interval
 // and register a job with the provided uuid
-func CreateJob(scheduler *gocron.Scheduler, jobuuid uuid.UUID, jobcommand string) (*gocron.Job, error) {
+func CreateJob(scheduler *gocron.Scheduler, jobuuid uuid.UUID, jobcommand JobCommand) (*gocron.Job, error) {
 	uuidString := jobuuid.String()
 
 	// Check if job with the same ID already exists
@@ -34,10 +39,10 @@ func CreateJob(scheduler *gocron.Scheduler, jobuuid uuid.UUID, jobcommand string
 	job, err := scheduler.
 		Tag(uuidString).
 		WaitForSchedule().
-		DoWithJobDetails(handler, uuidString, jobcommand)
+		DoWithJobDetails(executeJob, uuidString, jobcommand)
 	return job, err
 }
 
 func DeleteJob(jobuuid uuid.UUID) error {
-	return Scheduler.RemoveByTag(jobuuid.String())
+	return scheduler.RemoveByTag(jobuuid.String())
 }

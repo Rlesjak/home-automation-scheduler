@@ -1,6 +1,8 @@
 package services
 
 import (
+	"fmt"
+
 	"github.com/go-co-op/gocron"
 	"github.com/google/uuid"
 	"rlesjak.com/ha-scheduler/scheduler"
@@ -9,26 +11,48 @@ import (
 
 func CreateScheduledJob(condition string, command string, trigUuid uuid.UUID) (string, error) {
 
-	parsedCondition, parseErr := parsers.ParseCondition(condition)
-	if parseErr != nil {
-		return "", parseErr
+	// Parse given condition
+	parsedCondition, conditionParseErr := parsers.ParseCondition(condition)
+	if conditionParseErr != nil {
+		return "", conditionParseErr
 	}
 
+	// Parse given command string
+	parsedCommand, commandParseErr := parsers.ParseCommand(command)
+	if commandParseErr != nil {
+		return "", commandParseErr
+	}
+
+	//*************** IMPORTANT!!!
+	// DO NOT RETURN THIS FUNCTION ANYWHERE FROM HERE
+	// TO THE scheduler.CreateJob() CALL
+	// Because global instance of scheduler is used
+	// if the process of building a schedule gets interrupted
+	// there will be mixing of schedules from multiple calls
+
 	// Get scheduler
-	schedule := scheduler.Scheduler
+	schedule := scheduler.GetScheduler()
 	// Set interval
 	schedule.Every(parsedCondition.EveryNof)
 	// Set event/unit
 	buildEventsSchedule(parsedCondition.Events, schedule)
-
 	// If at time of day is set, add it to schedule
 	if parsedCondition.At.Valid {
 		schedule.At(parsedCondition.At.String)
 	}
-
 	// Create job and return next time it will run
-	job, err := scheduler.CreateJob(schedule, trigUuid, command)
+	job, err := scheduler.CreateJob(schedule, trigUuid, parsedCommand)
 	return job.NextRun().String(), err
+}
+
+// This method is called by the scheduler
+// with the required parameters and at the required time
+func executeTrigger(triggerUuid string, command scheduler.JobCommand, job gocron.Job) {
+	fmt.Println("EXECTUE TRIGGER")
+	command.Run()
+	// fmt.Println("SCHEDULRE: " + triggerUuid + "\n" + job.Tags()[0])
+
+	// logs.Info.Printf("<JOB>{%s} Executed with command: (%s)", triggerUuid, command)
 }
 
 func buildEventsSchedule(events []string, schedule *gocron.Scheduler) {
