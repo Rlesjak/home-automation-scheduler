@@ -1,10 +1,9 @@
 package services
 
 import (
-	"fmt"
-
 	"github.com/go-co-op/gocron"
 	"github.com/google/uuid"
+	"rlesjak.com/ha-scheduler/logs"
 	"rlesjak.com/ha-scheduler/scheduler"
 	"rlesjak.com/ha-scheduler/services/parsers"
 )
@@ -48,11 +47,11 @@ func CreateScheduledJob(condition string, command string, trigUuid uuid.UUID) (s
 // This method is called by the scheduler
 // with the required parameters and at the required time
 func executeTrigger(triggerUuid string, command scheduler.JobCommand, job gocron.Job) {
-	fmt.Println("EXECTUE TRIGGER")
+	// Run the command
 	command.Run()
-	// fmt.Println("SCHEDULRE: " + triggerUuid + "\n" + job.Tags()[0])
 
-	// logs.Info.Printf("<JOB>{%s} Executed with command: (%s)", triggerUuid, command)
+	// Log
+	logs.Info.Printf("<JOB>{%s} Executed", triggerUuid)
 }
 
 func buildEventsSchedule(events []string, schedule *gocron.Scheduler) {

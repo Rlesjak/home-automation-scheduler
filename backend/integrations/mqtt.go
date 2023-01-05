@@ -2,7 +2,6 @@ package integrations
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -41,11 +40,7 @@ func initialiseMqttIntegration(config config.Config) {
 
 }
 
-func GetMqttClient() mqtt.Client {
-	return client
-}
-
-func parsedCommand(command string) (string, string, error) {
+func getParsedCommand(command string) (string, string, error) {
 	// Split topic and message
 	// message should look like this: "topic/subtopic/Hello World!"
 	lastSlashIndex := strings.LastIndex(command, "/")
@@ -54,26 +49,28 @@ func parsedCommand(command string) (string, string, error) {
 		return "", "", errors.New("mqtt-parser> Topic missing!")
 	}
 
-	fmt.Printf("MQTTHANDLER: topic: [%s], message[%s]",
-		command[:lastSlashIndex],
-		command[lastSlashIndex:])
+	topic := command[:lastSlashIndex]
+	message := command[lastSlashIndex+1:]
 
-	return "", "", nil
+	return topic, message, nil
 }
 
-func mqttIntegrationHanlder(command string) {
-	fmt.Println("MQTT INTEGRATION HANDLER")
+func mqttIntegrationHandler(command string) {
+	// Should already be validated, so there is no need to check for errors
+	// Lets se how this comment ages xD
+	topic, message, _ := getParsedCommand(command)
 	// Send message
-	// token := client.Publish(splitMessage[0], 0, false, splitMessage[1])
-	// go func() {
-	// 	_ = token.Wait()
-	// 	if token.Error() != nil {
-	// 		logs.Error.Println(token.Error())
-	// 	}
-	// }()
+	token := client.Publish(topic, 0, false, message)
+	go func() {
+		_ = token.Wait()
+		if token.Error() != nil {
+			// log error
+			logs.Error.Println(token.Error())
+		}
+	}()
 }
 
 func mqttValidateCommand(command string) error {
-	_, _, err := parsedCommand(command)
+	_, _, err := getParsedCommand(command)
 	return err
 }

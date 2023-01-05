@@ -22,7 +22,7 @@ func GetIntegrationHandler(integrationName string) (IntegrationCommand, error) {
 	switch integrationName {
 	case "mqtt":
 		return IntegrationCommand{
-			Handler:  mqttIntegrationHanlder,
+			Handler:  mqttIntegrationHandler,
 			Validate: mqttValidateCommand,
 		}, nil
 	}
