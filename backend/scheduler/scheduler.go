@@ -15,6 +15,7 @@ var scheduler *gocron.Scheduler
 
 func InitScheduler(config config.Config) {
 	scheduler = gocron.NewScheduler(time.Local)
+	scheduler.TagsUnique()
 	scheduler.StartAsync()
 }
 

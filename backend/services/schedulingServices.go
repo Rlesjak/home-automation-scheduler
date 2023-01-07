@@ -1,25 +1,21 @@
 package services
 
 import (
+	"context"
+
 	"github.com/go-co-op/gocron"
 	"github.com/google/uuid"
 	"rlesjak.com/ha-scheduler/logs"
+	models "rlesjak.com/ha-scheduler/model"
 	"rlesjak.com/ha-scheduler/scheduler"
 	"rlesjak.com/ha-scheduler/services/parsers"
 )
 
 func CreateScheduledJob(condition string, command string, trigUuid uuid.UUID) (string, error) {
 
-	// Parse given condition
-	parsedCondition, conditionParseErr := parsers.ParseCondition(condition)
-	if conditionParseErr != nil {
-		return "", conditionParseErr
-	}
-
-	// Parse given command string
-	parsedCommand, commandParseErr := parsers.ParseCommand(command)
-	if commandParseErr != nil {
-		return "", commandParseErr
+	parsedCondition, parsedCommand, parserError := parsers.ParseJob(condition, command)
+	if parserError != nil {
+		return "", parserError
 	}
 
 	//*************** IMPORTANT!!!
@@ -41,7 +37,33 @@ func CreateScheduledJob(condition string, command string, trigUuid uuid.UUID) (s
 	}
 	// Create job and return next time it will run
 	job, err := scheduler.CreateJob(schedule, trigUuid, parsedCommand)
+
+	if err != nil {
+		return "", err
+	}
+
 	return job.NextRun().String(), err
+}
+
+func CreateScheduledJobFromTriggerUuid(ctx context.Context, trigUuid uuid.UUID) (string, error) {
+	// Fetch trigger data from database
+	trigger, qerr := models.Q.GetTriggerByUuid(ctx, trigUuid)
+	if qerr != nil {
+		return "", qerr
+	}
+
+	//TODO: Implement logic if trigger is runnign an element script
+	// If elementuuid is not present, all needed info is already available
+	// if trigger.ElementUuid.Valid == false {
+	return CreateScheduledJob(
+		trigger.Condition.String,
+		trigger.Command.String,
+		trigger.Uuid,
+	)
+	// } else {
+	// 	// Fetch element info
+	// 	element, err := models.Q.GetElementById....
+	// }
 }
 
 // This method is called by the scheduler
