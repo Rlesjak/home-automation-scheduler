@@ -1,5 +1,5 @@
 import {
-    createBrowserRouter
+    createHashRouter
 } from "react-router-dom";
 
 import Root from "./routes/root";
@@ -7,7 +7,7 @@ import Root from "./routes/root";
 import Dashboard from "./routes/dashboard/dashboard";
 import DasboardRoutes from "./routes/dashboard/dasboard-routes";
 
-export default createBrowserRouter([
+export default createHashRouter([
     {
         path: "/",
         element: <Root />,

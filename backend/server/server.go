@@ -4,13 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gookit/config/v2"
 	controller "rlesjak.com/ha-scheduler/server/controllers"
+	"rlesjak.com/ha-scheduler/server/ui"
 )
 
 func StartServer(config config.Config) *gin.Engine {
 	router := gin.Default()
 
+	ui.RegisterEmbeddedUiRoutes(router, config)
 	registerApiRoutes(router, config)
-
 	router.Run("0.0.0.0:9090")
 
 	return router

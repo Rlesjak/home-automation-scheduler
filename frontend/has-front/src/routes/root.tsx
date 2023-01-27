@@ -9,7 +9,7 @@ export default function() {
   // Redirect to dashboard route
   let navigate = useNavigate()
   useEffect(() => {
-      navigate('/dashboard')
+      navigate('dashboard')
   }, [])
 
     return <Outlet />

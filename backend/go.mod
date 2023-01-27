@@ -6,6 +6,7 @@ require (
 	github.com/TwiN/go-color v1.4.0 // indirect
 	github.com/eclipse/paho.mqtt.golang v1.4.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
+	github.com/gin-gonic/contrib v0.0.0-20221130124618-7e01895a63f2 // indirect
 	github.com/gin-gonic/gin v1.8.2 // indirect
 	github.com/go-co-op/gocron v1.18.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
