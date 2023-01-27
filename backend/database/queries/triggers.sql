@@ -15,6 +15,22 @@ LEFT JOIN public.elements ON elements.id = triggers.element_id,
 ( SELECT id FROM public.trigger_groups WHERE uuid = @parentuuid::uuid ) trgrp
 WHERE triggers.group_id = trgrp.id;
 
+-- name: GetAllActiveTriggers :many
+SELECT 
+triggers.uuid, 
+triggers."name", 
+triggers.description, 
+triggers.description, 
+triggers."type", 
+triggers.condition, 
+triggers.command,
+elements.uuid as element_uuid,
+triggers.active
+FROM 
+public.triggers
+LEFT JOIN public.elements ON elements.id = triggers.element_id
+WHERE triggers.active = true;
+
 -- name: GetTriggerByUuid :one
 SELECT 
 triggers.uuid, 

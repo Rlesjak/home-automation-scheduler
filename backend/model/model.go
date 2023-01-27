@@ -14,7 +14,7 @@ import (
 var Q *db.Queries
 var DB *sql.DB
 
-func ConnectDatabase(config config.Config) {
+func ConnectDatabase(config config.Config) error {
 
 	// Check if DB_HOST env variable exists to determine if
 	// required env variables are available
@@ -46,14 +46,16 @@ func ConnectDatabase(config config.Config) {
 	database, err := sql.Open("postgres", dataSourceName)
 	if err != nil {
 		log.Fatal(color.InWhiteOverRed("ERROR CONNECTING TO DATABASE \n"), err)
-		return
+		return err
 	}
 
 	if err := database.Ping(); err != nil {
 		log.Fatal(color.InWhiteOverRed("ERROR PINGING DB \n"), err)
-		return
+		return err
 	}
 
 	Q = db.New(database)
 	DB = database
+
+	return nil
 }

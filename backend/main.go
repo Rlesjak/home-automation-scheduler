@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	appconf "rlesjak.com/ha-scheduler/config"
 	"rlesjak.com/ha-scheduler/integrations"
 	"rlesjak.com/ha-scheduler/logs"
@@ -19,7 +21,13 @@ func main() {
 	config := appconf.GetAppConfig()
 
 	// Connect to the database
-	models.ConnectDatabase(config)
+	dbErr := models.ConnectDatabase(config)
+	if dbErr != nil {
+		// If connection to the database cannot be established
+		// server should not start
+		os.Exit(1)
+		return
+	}
 
 	// Initialise scheduler
 	scheduler.InitScheduler(config)
@@ -28,7 +36,12 @@ func main() {
 	integrations.InitialiseIntegrations(config)
 
 	// Initialise services
-	services.InitialiseServices(config)
+	srvcsErr := services.InitialiseServices(config)
+	if srvcsErr != nil {
+		// If services failed initialisation server should not start
+		os.Exit(1)
+		return
+	}
 
 	// Start listening for http requests
 	server.StartServer(config)
