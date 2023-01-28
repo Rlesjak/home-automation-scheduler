@@ -26,14 +26,14 @@ export default function(props: t_ReactiveMenuProps) {
         <div className={
             cx({
                 "relative h-full border-gray-300 transition-all": true,
-                "w-80 border-r md:w-52": isNavOpen,
+                "w-80 border-r": isNavOpen,
                 "w-0": !isNavOpen
             })
         }>
             <div
                 onClick={() => setIsNavOpen(true)}
                 className={ cx({
-                    "absolute top-0 w-16 py-1 border-r border-b border-gray-300 bg-white rounded-br-md": true,
+                    "absolute top-0 w-16 py-1 border-r border-b border-gray-300 bg-white rounded-br-sm": true,
                     "hover:cursor-pointer hover:bg-gray-100": true,
                     "hidden": isNavOpen
                 })}
@@ -46,14 +46,14 @@ export default function(props: t_ReactiveMenuProps) {
             
             <div
                 onClick={() => setIsNavOpen(false)}
-                className="py-1 border-b border-gray-300 hover:cursor-pointer hover:bg-gray-100"
+                className="flex items-center h-16 border-b border-gray-300 hover:cursor-pointer hover:bg-gray-100"
             >
                 <Icon 
                     icon={arrowLongLeft}
-                    className='w-7 h-7 ml-auto mr-3 [&>path]:stroke-1'
+                    className='w-7 h-7 ml-auto mr-3 [&>path]:stroke-1 text-slate-600'
                 />
             </div>
-            <div className="px-3">
+            <div className="px-3 overflow-hidden">
                 {props.children}
             </div>
         </div>
