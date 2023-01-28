@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/gin-gonic/contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gookit/config/v2"
 	controller "rlesjak.com/ha-scheduler/server/controllers"
@@ -9,6 +10,9 @@ import (
 
 func StartServer(config config.Config) *gin.Engine {
 	router := gin.Default()
+
+	// Setup CORS
+	router.Use(cors.Default())
 
 	ui.RegisterEmbeddedUiRoutes(router, config)
 	registerApiRoutes(router, config)

@@ -1,16 +1,19 @@
 import { useEffect } from "react";
 import {
     Outlet,
-    useNavigate
+    useNavigate,
+    useLocation
   } from "react-router-dom";
 
 export default function() {
 
-  // Redirect to dashboard route
-  let navigate = useNavigate()
+  const location = useLocation()
+  const navigate = useNavigate()
+  
   useEffect(() => {
-      navigate('dashboard')
+    // Redirect to dashboard route
+    if (location.pathname == '/') navigate('dashboard')
   }, [])
 
-    return <Outlet />
+  return <Outlet />
 }
