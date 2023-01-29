@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react"
 
 type t_RunFetch = (silent?: boolean) => void
+type t_UseFetch<T> = [T | undefined, boolean, unknown, t_RunFetch]
 
-export function useFetch<T = unknown>(key: string, dataProvider: (() => Promise<T>)): [T | undefined, boolean, unknown, t_RunFetch] {
+export function useFetch<T = unknown>(key: string, dataProvider: (() => Promise<T>)): t_UseFetch<T> {
     let [data, setData] = useState<T>();
     let [loading, setLoading] = useState<boolean>(false);
     let [error, setError] = useState<unknown>();
@@ -45,18 +46,18 @@ export function useTemplatedFetch<T = unknown>(
     itemRenderer: t_ItemRenderer<T>,
     loadingRenderer: t_LoadingRenderer,
     errorRenderer: t_ErrorRenderer
-): React.ReactNode{
-
+): [React.ReactNode, t_UseFetch<[T]>]{
     let [data, loading, error, runFetch] = useFetch(key, dataProvider)
 
     if (loading) {
-        return loadingRenderer()
+        return [loadingRenderer(), [data, loading, error, runFetch]];
     }
     else if (typeof error !== "undefined") {
-        return errorRenderer(error, runFetch)
+        return [errorRenderer(error, runFetch), [data, loading, error, runFetch]];
     }
 
-    return data?.map((value) => {
+    const renderedList = data?.map((value) => {
         return itemRenderer(value);
-    })
+    });
+    return [renderedList, [data, loading, error, runFetch]];
 }
